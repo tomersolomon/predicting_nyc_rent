@@ -47,7 +47,7 @@ def score_rent():
 
 	#Continous
 
-	cont_features = ['sc150','sc151']
+	cont_features = ['sc150','sc151','fw']
 
 	#98,99 nan, 13k of those
 	#monthly fees, real estate taxes (13.7K nan), stories in building
@@ -111,43 +111,41 @@ def score_rent():
 
 
 	#feature selection
-
 	select_ridgecv = SelectFromModel(RidgeCV(),threshold = 'median')
 
 	#pipeline
 
-	pipe = make_pipeline(Imputer(missing_values='NaN',strategy='most_frequent'),MaxAbsScaler(),select_ridgecv,Ridge(alpha=1.0))
+	pipe = make_pipeline(Imputer(missing_values='NaN',strategy='most_frequent'),MaxAbsScaler(),select_ridgecv,Ridge(alpha=10.0))
 	scores = cross_val_score(pipe,X_train,y_train,cv=5)
 
 	#print("scores for 5 fold cv:")
-	#print(scores)
-	np.mean(scores)
-
+	print("cross val scores:")
+	print(scores)
 
 	model = pipe.fit(X_train,y_train)
 	predicted_label = model.predict(X_test)
 	print("r^2 value is:")
 	print (r2_score(y_test, predicted_label))
 
-	
+	#gridsearchCV
+	#lower value?
 
+	def grid_search():
+		print('gridsearch')
+		param_grid = {'ridge__alpha' : np.array([0.001,0.01,.1,1,10,100])}
+		grid = GridSearchCV(pipe,param_grid,cv=5)
+		grid.fit(X_train,y_train)
+		#grid.predict(X_test)
+		print("grid search")
+		print(grid.score(X_test,y_test))
+		print(grid.best_params_)
 
-#	gridsearchCV
-#	didn't give me as good values as cross_val_score
-
-	print('gridsearch')
-	param_grid = {'ridge__alpha' : np.array([0.001,0.01,.1,1,10,100])}
-	grid = GridSearchCV(pipe,param_grid,cv=5)
-	grid.fit(X_train,y_train)
-	#grid.predict(X_test)
-	print("grid search")
-	print(grid.score(X_test,y_test))
-	print(grid.best_params_)
+	grid_search()
 
 	#IMPUTATION (REPLACING NAN'S)
 
 	# imp = Imputer(missing_values='NaN',strategy='most_frequent',axis=0)
-	# imp.fit(X_train)
+	# imp.fit_transform(X_train)
 
 	# # #LASSO MODEL
 
@@ -157,9 +155,6 @@ def score_rent():
 	# print(np.sum(lasso.coef_ != 0))
 
 	#print (X_dummies.head())
-
-	#scores = cross_val_score(lasso,X_dummies,y,cv=5)
-	#print(scores)
 
 	return r2_score(y_test, predicted_label)
 
@@ -271,7 +266,7 @@ def predict_rent():
 
 	#feature selection
 
-	select_lassocv = SelectFromModel(LassoCV(),threshold = 'median')
+	select_lassocv = SelectFromModel(LassoCV(),threshold = 'mean')
 
 	#pipeline
 
@@ -280,15 +275,14 @@ def predict_rent():
 	model = pipe.fit(X_train,y_train)
 	predicted_label = model.predict(X_test)
 
+
+	#everything above is same code as score_rent except for making X_train,X_test preOHE varaibles
+
 	print(X_train_preOHE,y_test,predicted_label)
 	return(X_train_preOHE,y_test,predicted_label)
 
 
 #predict_rent()
-
-
-
-
 
 
 
