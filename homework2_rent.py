@@ -6,10 +6,9 @@ import scipy as sp
 from sklearn.model_selection import train_test_split,cross_val_score, GridSearchCV #model_selection only works in python3
 from sklearn.preprocessing import Imputer,OneHotEncoder,StandardScaler, MaxAbsScaler, PolynomialFeatures
 from sklearn.feature_selection import SelectFromModel
-from sklearn.linear_model import LinearRegression, Lasso, Ridge, LassoCV
+from sklearn.linear_model import LinearRegression, Lasso, Ridge, RidgeCV, LassoCV
 from sklearn.pipeline import make_pipeline
 from sklearn.metrics import r2_score
-
 
 import pandas as pd
 
@@ -18,7 +17,7 @@ def score_rent():
 	raw_data = pd.read_csv(url)
 
 	#delete 9999 which is missing value (can't train if there is no response variable)
-	raw_data = raw_data[raw_data.uf17 <= 99999]
+	raw_data = raw_data[raw_data.uf17 <= 9999]
 
 	##MANUAL FEATURE SELECTION
 
@@ -93,7 +92,7 @@ def score_rent():
 		X[i] = X[i].astype('category')
 
 
-	# #TRAIN TEST SPLIT
+	#TRAIN TEST SPLIT
 
 	#train test split
 	y=raw_data['uf17']
@@ -113,11 +112,11 @@ def score_rent():
 
 	#feature selection
 
-	select_lassocv = SelectFromModel(LassoCV(),threshold = 'median')
+	select_ridgecv = SelectFromModel(RidgeCV(),threshold = 'median')
 
 	#pipeline
 
-	pipe = make_pipeline(Imputer(missing_values='NaN',strategy='most_frequent'),MaxAbsScaler(),select_lassocv,Lasso(alpha=.001))
+	pipe = make_pipeline(Imputer(missing_values='NaN',strategy='most_frequent'),MaxAbsScaler(),select_ridgecv,Ridge(alpha=1.0))
 	scores = cross_val_score(pipe,X_train,y_train,cv=5)
 
 	#print("scores for 5 fold cv:")
@@ -127,22 +126,23 @@ def score_rent():
 
 	model = pipe.fit(X_train,y_train)
 	predicted_label = model.predict(X_test)
-	#print("r^2 value is:")
-	#print (r2_score(y_test, predicted_label))
+	print("r^2 value is:")
+	print (r2_score(y_test, predicted_label))
+
 	
-	return r2_score(y_test, predicted_label)
 
-	#gridsearchCV
-	#didn't give me as good values as cross_val_score
 
-	# print('gridsearch')
-	# param_grid = {'lasso__alpha' : np.array([0.001,0.01,.1,1,10,100])}
-	# grid = GridSearchCV(pipe,param_grid,cv=5)
-	# grid.fit(X_train,y_train)
-	# #grid.predict(X_test)
-	# print("grid search")
-	# print(grid.score(X_test,y_test))
-	# print(grid.best_params_)
+#	gridsearchCV
+#	didn't give me as good values as cross_val_score
+
+	print('gridsearch')
+	param_grid = {'ridge__alpha' : np.array([0.001,0.01,.1,1,10,100])}
+	grid = GridSearchCV(pipe,param_grid,cv=5)
+	grid.fit(X_train,y_train)
+	#grid.predict(X_test)
+	print("grid search")
+	print(grid.score(X_test,y_test))
+	print(grid.best_params_)
 
 	#IMPUTATION (REPLACING NAN'S)
 
@@ -161,8 +161,10 @@ def score_rent():
 	#scores = cross_val_score(lasso,X_dummies,y,cv=5)
 	#print(scores)
 
+	return r2_score(y_test, predicted_label)
 
-#score_rent()
+
+score_rent()
 
 def predict_rent():
 
@@ -258,8 +260,13 @@ def predict_rent():
 	#X_test = imp.fit_transform(X_test)
 
 	#do the OHE
-	X_train = pd.get_dummies(X_train_preOHE) 
-	X_test = pd.get_dummies(X_test_preOHE) 
+	#X_train = pd.get_dummies(X_train_preOHE) 
+	#X_test = pd.get_dummies(X_test_preOHE) 
+
+	#without OHE
+
+	X_train = X_train_preOHE 
+	X_test = X_test_preOHE
 
 
 	#feature selection
@@ -268,20 +275,16 @@ def predict_rent():
 
 	#pipeline
 
-	pipe = make_pipeline(Imputer(missing_values='NaN',strategy='most_frequent'),MaxAbsScaler(),select_lassocv,Lasso(alpha=.001))
+	pipe = make_pipeline(Imputer(missing_values='NaN',strategy='most_frequent'),MaxAbsScaler(),select_lassocv,Lasso(alpha=10))
 
 	model = pipe.fit(X_train,y_train)
 	predicted_label = model.predict(X_test)
-
 
 	print(X_train_preOHE,y_test,predicted_label)
 	return(X_train_preOHE,y_test,predicted_label)
 
 
 #predict_rent()
-
-def import_test():
-	print("hello world")
 
 
 
