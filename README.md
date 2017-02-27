@@ -23,7 +23,7 @@ I then trained the model using linear regression with an L2 regularization (Ridg
 
 ###Results
 
-I managed to get down to an R^2 of .48. I thought this seemed low initially when reading book examples of high correlation values, but after thinking about it, it means that a linear model might not be the best fit for the job, as well as the fact that we had alot of categorical variables that we "forced" into continuous, so a regression wouldn't fully capture the nature of these features. Also, I wonder how the extent of the imputation affects this result.
+I managed to get up to an R^2 of .48. I thought this seemed low initially when reading book examples of high correlation values, but after thinking about it, it means that a linear model might not be the best fit for the job, as well as the fact that we had alot of categorical variables that we "forced" into continuous, so a regression wouldn't fully capture the nature of these features. Also, I wonder how the extent of the imputation affects this result.
 
 ###Reflection
 
