@@ -8,10 +8,10 @@ Regression task using linear models to predict the monthly rent of an NYC apartm
 
 ###Feature Selection
 
-Feature selection was definitely one of the more time consuming process. I began by first manually scraping the dataset and going through all 197 features to determine those that were relavant in [this](https://www.census.gov/housing/nychvs/data/2014/vac_14_long.pdf) pdf. For example, I discarded all the ones that were associated with the current homeowner living in the apartment, as those variables don't drive the monthly rent. I then went and sorted the relevant variables by continuous (ex) number of bedrooms, number of stories) and categorical (ex) borough, whether there are mice). This is because you can't run a regression on categorical features.
+Feature selection was definitely one of the more time consuming process. I began by first manually scraping the dataset and going through all 197 features to determine those that were relevant in [this](https://www.census.gov/housing/nychvs/data/2014/vac_14_long.pdf) pdf. For example, I discarded all the features that were associated with the current homeowner living in the apartment, as those variables don't drive the monthly rent. I then went and sorted the relevant variables by continuous (number of bedrooms, number of stories, etc..) and categorical (borough, broken window, mice,etc..) features. This is because you can't run a regression on categorical features.
 
 ###Imputation
-what I did is then applied One Hot Encoding to split the categorical features up into n binary columns, where n is the number of unique values of the feature. After this transformation,a regression can be run. I used Imputer to run an imputation with the most frequent strategy, to fill in values for the NaN's. The NaN's were time consuming to determine as well because each feature had different values for "not reported", so those had to be manually sorted. 
+What I then did is applied One Hot Encoding to split the categorical features up into n binary columns, where n is the number of unique values of the feature. After this transformation,a regression can be run. I used Imputer to run an imputation with the most frequent strategy, to fill in values for the NaN's. The NaN's were time consuming to determine as well because each feature had different values for "not reported", so those had to be manually sorted. 
 
 
 ###Pre-Processing
@@ -27,7 +27,7 @@ I managed to get down to an R^2 of .48. I thought this seemed low initially when
 
 ###Reflection
 
-Overall, I thought this was a very interested assignment as we got to use real data to do prediction on NYC apartment rentals (something I definitely need to familiarize myslef with before I graduate). I learned how, contrary to what I originally thought, creating the model is the easy step; the difficult part lies in understanding and scraping the data in a way that makes sense.
+Overall, I thought this was a very interested assignment as we got to use real data to do prediction on NYC apartment rentals (something I definitely need to familiarize myself with before I graduate). I learned how, contrary to what I originally thought, creating the model is the easy step; the difficult part lies in understanding and scraping the data in a way that makes sense.
 
 
 ###Travis-CI Link
