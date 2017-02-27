@@ -4,7 +4,7 @@ import numpy as np
 import scipy as sp
 
 from sklearn.model_selection import train_test_split,cross_val_score, GridSearchCV #model_selection only works in python3
-from sklearn.preprocessing import Imputer,OneHotEncoder,StandardScaler, MaxAbsScaler
+from sklearn.preprocessing import Imputer,OneHotEncoder,StandardScaler, MaxAbsScaler, PolynomialFeatures
 from sklearn.feature_selection import SelectFromModel
 from sklearn.linear_model import LinearRegression, Lasso, Ridge, LassoCV
 from sklearn.pipeline import make_pipeline
@@ -120,14 +120,16 @@ def score_rent():
 	pipe = make_pipeline(Imputer(missing_values='NaN',strategy='most_frequent'),MaxAbsScaler(),select_lassocv,Lasso(alpha=.001))
 	scores = cross_val_score(pipe,X_train,y_train,cv=5)
 
-	print("scores for 5 fold cv:")
-	print(scores)
+	#print("scores for 5 fold cv:")
+	#print(scores)
 	np.mean(scores)
 
 
 	model = pipe.fit(X_train,y_train)
 	predicted_label = model.predict(X_test)
-	print (r2_score(y_test, predicted_label))
+	#print("r^2 value is:")
+	#print (r2_score(y_test, predicted_label))
+	
 	return r2_score(y_test, predicted_label)
 
 	#gridsearchCV
@@ -160,7 +162,7 @@ def score_rent():
 	#print(scores)
 
 
-score_rent()
+#score_rent()
 
 def predict_rent():
 
@@ -277,6 +279,9 @@ def predict_rent():
 
 
 #predict_rent()
+
+def import_test():
+	print("hello world")
 
 
 
