@@ -13,6 +13,16 @@ from sklearn.metrics import r2_score
 import pandas as pd
 
 def score_rent():
+	"""Function that applies Regression with Lasso Regularization to the NYC Census data to predict the monthly rent of an partment.
+
+
+	Returns
+	-------
+	int
+		R^2 value. 
+
+	"""	
+
 	url = 'https://ndownloader.figshare.com/files/7586326'
 	raw_data = pd.read_csv(url)
 
@@ -119,13 +129,24 @@ def score_rent():
 		print(grid.score(X_test,y_test))
 		print(grid.best_params_)
 
-	#grid_search()
-
 	return r2_score(y_test, predicted_label)
 
-#score_rent()
+score_rent()
 
 def predict_rent():
+	"""Function that also applies Regression with Lasso Regularization to the NYC Census data to predict the monthly rent of an partment.
+
+
+	Returns
+	-------
+	numpy.array
+		Test Data 
+	numpy.array
+		True Labels
+	numpy.array
+		Predicted Labels
+		
+	"""
 
 	url = 'https://ndownloader.figshare.com/files/7586326'
 	raw_data = pd.read_csv(url)
@@ -194,7 +215,7 @@ def predict_rent():
 	#train test split
 	y=raw_data['uf17']
 
-	X_train,X_test,y_train,y_test = train_test_split(X,y,random_state=1)
+	X_train_preOHE,X_test,y_train,y_test = train_test_split(X,y,random_state=1)
 
 
 	#imp needs to be before OHE
@@ -203,7 +224,7 @@ def predict_rent():
 	#X_test = imp.fit_transform(X_test)
 
 	#This performs the one hot encoding
-	X_train = pd.get_dummies(X_train) 
+	X_train = pd.get_dummies(X_train_preOHE) 
 	X_test = pd.get_dummies(X_test) 
 
 
@@ -230,8 +251,11 @@ def predict_rent():
 	#create numpy arrays out of X_train and y_test
 	
 	print("X_train,y_test, and predicted_label are:")
-	print(X_train.as_matrix(),y_test.as_matrix(),predicted_label)
-	return(X_train.as_matrix(),y_test.as_matrix(),predicted_label)
+	
+	#want to return preOHE since we want to do before OHE has been applied as well as imputing
+
+	print(X_train_preOHE.as_matrix(),y_test.as_matrix(),predicted_label)
+	return(X_train_preOHE.as_matrix(),y_test.as_matrix(),predicted_label)
 
 predict_rent()
 
