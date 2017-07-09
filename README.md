@@ -24,7 +24,7 @@ I then trained the model using linear regression with an L2 regularization (Ridg
 
 I managed to get up to an R^2 of .48. I thought this seemed low initially when reading book examples of high correlation values, but after thinking about it, it means that a linear model might not be the best fit for the job, as well as the fact that we had alot of categorical variables that we "forced" into continuous, so a regression wouldn't fully capture the nature of these features. Also, I wonder how the extent of the imputation affects this result.
 
-###Reflection
+### Reflection
 
 Overall, I thought this was a very interested assignment as we got to use real data to do prediction on NYC apartment rentals (something I definitely need to familiarize myself with before I graduate). I learned how, contrary to what I originally thought, creating the model is the easy step; the difficult part lies in understanding and scraping the data in a way that makes sense.
 
